@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shinkan Rebirth - 新刊</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #1e1e2e;
+        color: #cdd6f4;
+        font-family: "JetBrains Mono", "Courier New", Consolas, Monaco, monospace;
+        font-size: 13px;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      h1 {
+        color: #a6e3a1;
+        font-size: 24px;
+        text-align: center;
+        font-weight: normal;
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        color: #89dceb;
+        font-size: 12px;
+        text-align: center;
+        margin-bottom: 8px;
+      }
+
+      .quote {
+        color: #6c7086;
+        font-size: 12px;
+        text-align: center;
+        font-style: italic;
+        margin-bottom: 16px;
+      }
+
+      .add-form {
+        background: #313244;
+        border: 1px solid #45475a;
+        border-radius: 4px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .add-form h2 {
+        color: #a6e3a1;
+        font-size: 14px;
+        font-weight: normal;
+        margin-bottom: 4px;
+      }
+
+      .form-row {
+        display: flex;
+        gap: 12px;
+      }
+
+      input[type="text"], select {
+        padding: 10px;
+        background: #1e1e2e;
+        border: 1px solid #45475a;
+        border-radius: 4px;
+        color: #cdd6f4;
+        outline: none;
+        font-family: "JetBrains Mono", "Courier New", Consolas, Monaco, monospace;
+        font-size: 13px;
+        transition: border-color 0.15s;
+      }
+
+      input[type="text"]:focus, select:focus {
+        border-color: #a6e3a1;
+      }
+
+      input[type="text"]::placeholder {
+        color: #6c7086;
+      }
+
+      select {
+        cursor: pointer;
+      }
+
+      button {
+        padding: 10px 16px;
+        background: #313244;
+        color: #a6e3a1;
+        border: 1px solid #45475a;
+        border-radius: 4px;
+        font-family: "JetBrains Mono", "Courier New", Consolas, Monaco, monospace;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-weight: normal;
+      }
+
+      button:hover {
+        background: #45475a;
+        border-color: #a6e3a1;
+      }
+
+      .feed-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .feed-item {
+        background: #313244;
+        border: 1px solid #45475a;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .feed-item.anime {
+        border-color: #89b4fa;
+      }
+
+      .feed-header {
+        padding: 12px;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s;
+      }
+
+      .feed-header:hover {
+        background: #383b4d;
+      }
+
+      .feed-title-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+
+      .collapse-icon {
+        color: #6c7086;
+        font-size: 10px;
+        transition: transform 0.2s;
+        flex-shrink: 0;
+      }
+
+      .feed-item.collapsed .collapse-icon {
+        transform: rotate(-90deg);
+      }
+
+      .feed-title {
+        color: #a6e3a1;
+        font-size: 14px;
+        flex: 1;
+      }
+
+      .feed-item.anime .feed-title {
+        color: #89b4fa;
+      }
+
+      .feed-badge {
+        padding: 2px 8px;
+        background: #45475a;
+        color: #89dceb;
+        border-radius: 3px;
+        font-size: 11px;
+      }
+
+      .feed-type-badge {
+        padding: 2px 8px;
+        background: #a6e3a1;
+        color: #1e1e2e;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .feed-item.anime .feed-type-badge {
+        background: #89b4fa;
+      }
+
+      .feed-url {
+        color: #6c7086;
+        font-size: 11px;
+        margin-left: 18px;
+        word-break: break-all;
+      }
+
+      .feed-last {
+        color: #f9e2af;
+        font-size: 11px;
+        margin-left: 18px;
+        margin-top: 4px;
+      }
+
+      .feed-search {
+        color: #cba6f7;
+        font-size: 11px;
+        margin-left: 18px;
+        margin-top: 4px;
+      }
+
+      .feed-content {
+        padding: 0 12px 12px 12px;
+        display: flex;
+        gap: 8px;
+      }
+
+      .feed-item.collapsed .feed-content {
+        display: none;
+      }
+
+      .feed-content button {
+        flex: 1;
+        font-size: 12px;
+        padding: 8px;
+      }
+
+      .test-btn { color: #89dceb; }
+      .check-btn { color: #cba6f7; }
+      .edit-btn { color: #f9e2af; }
+      .delete-btn { color: #f38ba8; }
+
+      .empty-state {
+        text-align: center;
+        color: #6c7086;
+        padding: 60px 20px;
+        font-size: 13px;
+        background: #313244;
+        border: 1px solid #45475a;
+        border-radius: 4px;
+      }
+
+      .notification {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #a6e3a1;
+        color: #1e1e2e;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+        z-index: 1000;
+      }
+
+      .notification.show {
+        opacity: 1;
+      }
+
+      .stats-panel {
+        background: #313244;
+        border: 1px solid #45475a;
+        border-radius: 4px;
+        padding: 16px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 16px;
+      }
+
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .stat-label {
+        color: #6c7086;
+        font-size: 11px;
+      }
+
+      .stat-value {
+        color: #a6e3a1;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .filter-bar {
+        background: #313244;
+        border: 1px solid #45475a;
+        border-radius: 4px;
+        padding: 12px;
+        display: flex;
+        gap: 12px;
+      }
+
+      .filter-bar input {
+        flex: 2;
+      }
+
+      .filter-bar select {
+        flex: 1;
+      }
+
+      .feed-error {
+        color: #f38ba8;
+        font-size: 11px;
+        margin-left: 18px;
+        margin-top: 4px;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal.show {
+        display: flex;
+      }
+
+      .modal-content {
+        background: #313244;
+        border: 1px solid #45475a;
+        border-radius: 4px;
+        padding: 24px;
+        max-width: 500px;
+        width: 90%;
+      }
+
+      .modal-content h2 {
+        color: #a6e3a1;
+        margin-bottom: 16px;
+      }
+
+      .modal-content textarea {
+        width: 100%;
+        height: 200px;
+        padding: 10px;
+        background: #1e1e2e;
+        border: 1px solid #45475a;
+        border-radius: 4px;
+        color: #cdd6f4;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        resize: vertical;
+      }
+
+      .modal-buttons {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+      }
+
+      .modal-buttons button {
+        flex: 1;
+      }
+
+      .footer {
+        text-align: center;
+        color: #6c7086;
+        font-size: 11px;
+        margin-top: 32px;
+        padding: 16px;
+      }
+
+      .footer .heart {
+        color: #f38ba8;
+      }
+
+      #searchTextContainer {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Shinkan Rebirth - 新刊</h1>
+      <p class="subtitle">Go Edition with Gotify</p>
+      <p class="quote">"A cage went in search of a bird."</p>
+
+      <div class="add-form">
+        <h2>► Add New Feed</h2>
+        <div class="form-row">
+          <select id="feedType" style="flex: 0 0 120px;" onchange="toggleSearchText()">
+            <option value="manga">📖 Manga</option>
+            <option value="anime">🎬 Anime</option>
+          </select>
+          <input type="text" id="feedName" placeholder="Name" style="flex: 1;" />
+        </div>
+        <input type="text" id="rssUrl" placeholder="RSS Feed URL" />
+        <div id="searchTextContainer">
+          <input type="text" id="searchText" placeholder="Search text (e.g., 'Dragon Raja')" />
+        </div>
+        <input type="text" id="anilistUrl" placeholder="AniList URL (optional)" />
+        <input type="text" id="category" placeholder="Category (e.g., Action, Romance)" />
+        <button onclick="addFeed()">Add Feed</button>
+        <div style="display: flex; gap: 8px; margin-top: 8px">
+          <button onclick="exportList()" style="flex: 1; color: #89dceb">Export List</button>
+          <button onclick="showImportDialog()" style="flex: 1; color: #f9e2af">Import List</button>
+        </div>
+      </div>
+
+      <div class="stats-panel" id="statsPanel">
+        <div class="stat-item">
+          <span class="stat-label">Total Feeds:</span>
+          <span class="stat-value" id="statTotal">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">With Errors:</span>
+          <span class="stat-value" id="statErrors">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Notifications:</span>
+          <span class="stat-value" id="statNotifs">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Last Check:</span>
+          <span class="stat-value" id="statLastCheck">-</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Uptime:</span>
+          <span class="stat-value" id="statUptime">-</span>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <input type="text" id="searchInput" placeholder="Search feeds..." onkeyup="searchFeeds()" />
+        <select id="categoryFilter" onchange="filterByCategory()">
+          <option value="all">All Categories</option>
+        </select>
+      </div>
+
+      <div class="feed-list" id="feedList"></div>
+
+      <div class="footer">
+        Made with <span class="heart">♥</span> by crnobog
+      </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <div class="modal" id="importModal">
+      <div class="modal-content">
+        <h2>Import Feed List</h2>
+        <p style="color: #6c7086; font-size: 12px; margin-bottom: 12px">
+          Paste your exported JSON data here:
+        </p>
+        <textarea id="importData" placeholder='{"feeds": [...]}'></textarea>
+        <div class="modal-buttons">
+          <button onclick="closeImportDialog()">Cancel</button>
+          <button onclick="importList()" style="color: #a6e3a1">Import</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let allFeeds = [];
+
+      function toggleSearchText() {
+        const type = document.getElementById('feedType').value;
+        const container = document.getElementById('searchTextContainer');
+        container.style.display = type === 'anime' ? 'block' : 'none';
+      }
+
+      async function loadFeeds(url = "/api/feeds") {
+        const res = await fetch(url);
+        const feeds = await res.json();
+        allFeeds = feeds;
+        const list = document.getElementById("feedList");
+
+        if (feeds.length === 0) {
+          list.innerHTML = '<div class="empty-state">No feeds added yet. Add one above to get started.</div>';
+          return;
+        }
+
+        list.innerHTML = feeds.map(f => {
+          const typeClass = f.type === 'anime' ? 'anime' : '';
+          const typeIcon = f.type === 'anime' ? '🎬' : '📖';
+          const typeText = f.type === 'anime' ? 'Anime' : 'Manga';
+          
+          return `
+            <div class="feed-item ${typeClass}" id="feed-${f.id}">
+              <div class="feed-header" onclick="toggleFeed('${f.id}')">
+                <div class="feed-title-row">
+                  <span class="collapse-icon">▼</span>
+                  <span class="feed-title">${escapeHtml(f.name)}</span>
+                  <span class="feed-type-badge">${typeIcon} ${typeText}</span>
+                  <span class="feed-badge">${escapeHtml(f.category || "Uncategorized")}</span>
+                </div>
+                <div class="feed-url">${escapeHtml(f.rssUrl)}</div>
+                ${f.anilistUrl ? `<div class="feed-url" style="color: #89dceb;">AniList: ${escapeHtml(f.anilistUrl)}</div>` : ""}
+                ${f.searchText ? `<div class="feed-search">🔍 Search: "${escapeHtml(f.searchText)}"</div>` : ""}
+                ${f.lastChapter ? `<div class="feed-last">Last: ${escapeHtml(f.lastChapter)}</div>` : ""}
+                ${f.lastError ? `<div class="feed-error">⚠️ Error: ${escapeHtml(f.lastError)}</div>` : ""}
+                ${f.failCount > 0 ? `<div class="feed-error">Failed checks: ${f.failCount}</div>` : ""}
+              </div>
+              <div class="feed-content">
+                <button class="test-btn" onclick="event.stopPropagation(); testFeed('${f.id}')">Test</button>
+                <button class="check-btn" onclick="event.stopPropagation(); checkFeed('${f.id}')">Check</button>
+                <button class="delete-btn" onclick="event.stopPropagation(); deleteFeed('${f.id}')">Delete</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      let cachedUptimeStart = null;
+
+      function formatUptime(ms) {
+        const seconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        if (days > 0) return `${days}d ${hours % 24}h`;
+        if (hours > 0) return `${hours}h ${minutes % 60}m`;
+        if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+        return `${seconds}s`;
+      }
+
+      function updateUptimeDisplay() {
+        if (cachedUptimeStart !== null) {
+          const currentUptime = Date.now() - cachedUptimeStart;
+          document.getElementById("statUptime").textContent = formatUptime(currentUptime);
+        }
+      }
+
+      async function loadStats() {
+        try {
+          const res = await fetch("/api/stats");
+          const stats = await res.json();
+
+          document.getElementById("statTotal").textContent = stats.totalFeeds;
+          document.getElementById("statErrors").textContent = stats.feedsWithErrors;
+          document.getElementById("statNotifs").textContent = stats.notificationsSent;
+
+          if (stats.lastCheckTime) {
+            const date = new Date(stats.lastCheckTime);
+            document.getElementById("statLastCheck").textContent = date.toLocaleTimeString('sr-RS', { hour12: false });
+          }
+
+          if (stats.uptime !== undefined) {
+            cachedUptimeStart = Date.now() - stats.uptime;
+            updateUptimeDisplay();
+          }
+        } catch (error) {
+          console.error("Failed to load stats:", error);
+        }
+      }
+
+      async function loadCategories() {
+        try {
+          const res = await fetch("/api/categories");
+          const categories = await res.json();
+          const select = document.getElementById("categoryFilter");
+
+          select.innerHTML = '<option value="all">All Categories</option>';
+          categories.forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat;
+            option.textContent = cat;
+            select.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Failed to load categories:", error);
+        }
+      }
+
+      function searchFeeds() {
+        const query = document.getElementById("searchInput").value;
+        if (query.length > 0) {
+          loadFeeds(`/api/feeds?search=${encodeURIComponent(query)}`);
+        } else {
+          loadFeeds();
+        }
+      }
+
+      function filterByCategory() {
+        const category = document.getElementById("categoryFilter").value;
+        if (category === "all") {
+          loadFeeds();
+        } else {
+          loadFeeds(`/api/feeds?category=${encodeURIComponent(category)}`);
+        }
+      }
+
+      function toggleFeed(id) {
+        document.getElementById(`feed-${id}`).classList.toggle("collapsed");
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function showNotification(message) {
+        const notif = document.getElementById("notification");
+        notif.textContent = message;
+        notif.classList.add("show");
+        setTimeout(() => notif.classList.remove("show"), 3000);
+      }
+
+      async function addFeed() {
+        const type = document.getElementById("feedType").value;
+        const name = document.getElementById("feedName").value;
+        const rssUrl = document.getElementById("rssUrl").value;
+        const anilistUrl = document.getElementById("anilistUrl").value;
+        const category = document.getElementById("category").value;
+        const searchText = document.getElementById("searchText").value;
+
+        if (!name || !rssUrl) {
+          showNotification("Please fill required fields");
+          return;
+        }
+
+        const payload = { type, name, rssUrl, category };
+        if (anilistUrl) payload.anilistUrl = anilistUrl;
+        if (searchText && type === 'anime') payload.searchText = searchText;
+
+        await fetch("/api/feeds", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        document.getElementById("feedName").value = "";
+        document.getElementById("rssUrl").value = "";
+        document.getElementById("anilistUrl").value = "";
+        document.getElementById("category").value = "";
+        document.getElementById("searchText").value = "";
+        showNotification("Feed added successfully");
+        loadFeeds();
+        loadStats();
+        loadCategories();
+      }
+
+      async function deleteFeed(id) {
+        if (!confirm("Delete this feed?")) return;
+        await fetch(`/api/feeds/${id}`, { method: "DELETE" });
+        showNotification("Feed deleted");
+        loadFeeds();
+        loadStats();
+      }
+
+      async function testFeed(id) {
+        showNotification("Testing... Check Gotify!");
+        try {
+          const res = await fetch(`/api/feeds/${id}/test`, { method: "POST" });
+          const data = await res.json();
+          if (data.error) {
+            showNotification("Error: " + data.error);
+          } else {
+            showNotification("Test notification sent!");
+          }
+        } catch (error) {
+          showNotification("Test failed: " + error.message);
+        }
+      }
+
+      async function checkFeed(id) {
+        showNotification("Checking for updates...");
+        try {
+          const res = await fetch(`/api/feeds/${id}/check`, { method: "POST" });
+          const data = await res.json();
+          if (data.error) {
+            showNotification("Error: " + data.error);
+          } else {
+            showNotification("Check complete!");
+            loadFeeds();
+            loadStats();
+          }
+        } catch (error) {
+          showNotification("Check failed: " + error.message);
+        }
+      }
+
+      async function exportList() {
+        window.location.href = "/api/export";
+        showNotification("Exporting feed list...");
+      }
+
+      function showImportDialog() {
+        document.getElementById("importModal").classList.add("show");
+      }
+
+      function closeImportDialog() {
+        document.getElementById("importModal").classList.remove("show");
+        document.getElementById("importData").value = "";
+      }
+
+      async function importList() {
+        const data = document.getElementById("importData").value;
+        if (!data) {
+          showNotification("Please paste import data");
+          return;
+        }
+
+        try {
+          const parsed = JSON.parse(data);
+          if (!parsed.feeds || !Array.isArray(parsed.feeds)) {
+            showNotification("Invalid import data format");
+            return;
+          }
+
+          const res = await fetch("/api/import", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ feeds: parsed.feeds }),
+          });
+
+          const result = await res.json();
+          if (result.error) {
+            showNotification("Import failed: " + result.error);
+          } else {
+            showNotification(`Imported ${result.imported} feed(s), skipped ${result.skipped} duplicates`);
+            closeImportDialog();
+            loadFeeds();
+            loadStats();
+            loadCategories();
+          }
+        } catch (error) {
+          showNotification("Import failed: Invalid JSON");
+        }
+      }
+
+      // Initial load
+      loadFeeds();
+      loadStats();
+      loadCategories();
+
+      // Refresh stats every 30 seconds
+      setInterval(loadStats, 30000);
+      
+      // Update uptime display every second
+      setInterval(updateUptimeDisplay, 1000);
+    </script>
+  </body>
+</html>

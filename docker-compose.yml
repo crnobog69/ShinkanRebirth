@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  shinkan-rebirth:
+    build: .
+    container_name: shinkan-rebirth
+    restart: unless-stopped
+    ports:
+      - "11111:11111"
+    volumes:
+      - ./data:/root/data
+    environment:
+      # Gotify Configuration (optional)
+      - GOTIFY_SERVER=${GOTIFY_SERVER:-}
+      - GOTIFY_TOKEN=${GOTIFY_TOKEN:-}
+      
+      # Discord Configuration (optional)
+      - DISCORD_TOKEN=${DISCORD_TOKEN:-}
+      - DISCORD_CHANNEL_ID=${DISCORD_CHANNEL_ID:-}
+      
+      # Web Server
+      - WEB_PORT=11111
+      
+      # Check Interval (cron format)
+      - CHECK_INTERVAL=${CHECK_INTERVAL:-0 * * * *}
+      
+      # Data Files
+      - MANGA_DATA_FILE=./data/mangas.json
+      - ANIME_DATA_FILE=./data/anime.json
+      
+      # Timezone
+      - TZ=${TZ:-Europe/Belgrade}
+    networks:
+      - shinkan-network
+
+networks:
+  shinkan-network:
+    driver: bridge
