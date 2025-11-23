@@ -196,7 +196,6 @@ func (n *Notifier) sendToDiscord(title, feedName, chapter, link string, anilistU
 		Description: description,
 		URL:         link,
 		Color:       color,
-		Timestamp:   fmt.Sprintf("%d", int64(0)), // Will be auto-set by Discord
 	}
 
 	_, err := n.discordSession.ChannelMessageSendEmbed(n.discordChannelID, embed)
