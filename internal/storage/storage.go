@@ -75,12 +75,17 @@ func (s *Storage) writeToFile(filePath string, data models.Storage) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	jsonData, err := json.MarshalIndent(data, "", "  ")
+	file, err := os.Create(filePath)
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
-	return os.WriteFile(filePath, jsonData, 0644)
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "  ")
+	encoder.SetEscapeHTML(false) // Don't escape HTML characters like &, <, >
+	
+	return encoder.Encode(data)
 }
 
 func (s *Storage) read() (models.Storage, error) {
