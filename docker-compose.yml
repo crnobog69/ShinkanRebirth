@@ -22,7 +22,7 @@ services:
       - WEB_PORT=11111
       
       # Check Interval (cron format)
-      - CHECK_INTERVAL=${CHECK_INTERVAL:-0 * * * *}
+      - CHECK_INTERVAL=${CHECK_INTERVAL:-*/15 * * * *}
       
       # Data Files
       - MANGA_DATA_FILE=./data/mangas.json

@@ -142,7 +142,7 @@ func (c *Checker) checkFeedOnce(feed models.Feed) error {
 		log.Printf("   New: %s\n", latestChapter)
 
 		// Send notification
-		err := c.notifier.SendNotification(feed.Name, latestChapter, link, string(feed.Type), feed.AnilistUrl)
+		err := c.notifier.SendNotification(feed.Name, latestChapter, link, string(feed.Type), feed.AnilistUrl, feed.Cover)
 		if err != nil {
 			log.Printf("⚠️ [%s] Failed to send notification: %v\n", feed.Name, err)
 		} else {
@@ -246,7 +246,7 @@ func (c *Checker) TestFeed(feedID string) (map[string]interface{}, error) {
 	}
 
 	// Send test notification
-	err = c.notifier.SendTestNotification(feed.Name, latestItem.Title, latestItem.Link, string(feed.Type), feed.AnilistUrl)
+	err = c.notifier.SendTestNotification(feed.Name, latestItem.Title, latestItem.Link, string(feed.Type), feed.AnilistUrl, feed.Cover)
 	if err != nil {
 		return nil, fmt.Errorf("failed to send test notification: %w", err)
 	}

@@ -60,7 +60,7 @@ func New(gotifyServer, gotifyToken, discordToken, discordChannelID string) *Noti
 	return n
 }
 
-func (n *Notifier) SendNotification(feedName, chapter, link, feedType string, anilistUrl *string) error {
+func (n *Notifier) SendNotification(feedName, chapter, link, feedType string, anilistUrl *string, cover *string) error {
 	var title, message string
 	var priority int
 	var color int
@@ -83,7 +83,7 @@ func (n *Notifier) SendNotification(feedName, chapter, link, feedType string, an
 
 	message += fmt.Sprintf("\n\n🔗 Link: %s", link)
 
-	// Send to Gotify if configured
+	// Send to Gotify if configured (Gotify doesn't support images)
 	if n.gotifyServer != "" && n.gotifyToken != "" {
 		gotifyMsg := models.GotifyMessage{
 			Title:    title,
@@ -100,9 +100,9 @@ func (n *Notifier) SendNotification(feedName, chapter, link, feedType string, an
 		}
 	}
 
-	// Send to Discord if configured
+	// Send to Discord if configured (with cover image support)
 	if n.discordSession != nil && n.discordChannelID != "" {
-		if err := n.sendToDiscord(title, feedName, chapter, link, anilistUrl, color); err != nil {
+		if err := n.sendToDiscord(title, feedName, chapter, link, anilistUrl, cover, color); err != nil {
 			log.Printf("⚠️ Discord notification failed: %v\n", err)
 		}
 	}
@@ -110,7 +110,7 @@ func (n *Notifier) SendNotification(feedName, chapter, link, feedType string, an
 	return nil
 }
 
-func (n *Notifier) SendTestNotification(feedName, chapter, link, feedType string, anilistUrl *string) error {
+func (n *Notifier) SendTestNotification(feedName, chapter, link, feedType string, anilistUrl *string, cover *string) error {
 	var title, message string
 	var color int
 
@@ -130,7 +130,7 @@ func (n *Notifier) SendTestNotification(feedName, chapter, link, feedType string
 
 	message += fmt.Sprintf("\n\n🔗 Link: %s", link)
 
-	// Send to Gotify if configured
+	// Send to Gotify if configured (Gotify doesn't support images)
 	if n.gotifyServer != "" && n.gotifyToken != "" {
 		gotifyMsg := models.GotifyMessage{
 			Title:    title,
@@ -147,9 +147,9 @@ func (n *Notifier) SendTestNotification(feedName, chapter, link, feedType string
 		}
 	}
 
-	// Send to Discord if configured
+	// Send to Discord if configured (with cover image support)
 	if n.discordSession != nil && n.discordChannelID != "" {
-		if err := n.sendToDiscord(title, feedName, chapter, link, anilistUrl, color); err != nil {
+		if err := n.sendToDiscord(title, feedName, chapter, link, anilistUrl, cover, color); err != nil {
 			log.Printf("⚠️ Discord test notification failed: %v\n", err)
 		}
 	}
@@ -184,7 +184,7 @@ func (n *Notifier) sendToGotify(msg models.GotifyMessage) error {
 	return nil
 }
 
-func (n *Notifier) sendToDiscord(title, feedName, chapter, link string, anilistUrl *string, color int) error {
+func (n *Notifier) sendToDiscord(title, feedName, chapter, link string, anilistUrl *string, cover *string, color int) error {
 	description := fmt.Sprintf("**%s**\n%s", feedName, chapter)
 	
 	if anilistUrl != nil && *anilistUrl != "" {
@@ -196,6 +196,13 @@ func (n *Notifier) sendToDiscord(title, feedName, chapter, link string, anilistU
 		Description: description,
 		URL:         link,
 		Color:       color,
+	}
+	
+	// Add thumbnail if cover image is provided
+	if cover != nil && *cover != "" {
+		embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
+			URL: *cover,
+		}
 	}
 
 	_, err := n.discordSession.ChannelMessageSendEmbed(n.discordChannelID, embed)

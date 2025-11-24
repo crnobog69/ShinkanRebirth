@@ -22,6 +22,7 @@ type Feed struct {
 	FailCount   int       `json:"failCount"`
 	AddedAt     string    `json:"addedAt"`
 	SearchText  *string   `json:"searchText,omitempty"` // For anime: text to search for (e.g., "Dragon Raja")
+	Cover       *string   `json:"cover,omitempty"` // Cover image URL for Discord embeds
 }
 
 // Storage represents the data structure for storing feeds
